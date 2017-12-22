@@ -4,6 +4,7 @@ let dir_rows = ref 1
 let dir_cols = ref 1
 let mod_rows = ref 1
 let mod_cols = ref 1
+let num_opens = ref 1
 let comment_size = ref 5000
 
 
@@ -23,20 +24,20 @@ let write_directory basedir dir_row dir_col =
             []
           else
             List.flatten
-              (List.map 
-                 (fun k -> 
+              (List.map
+                 (fun k ->
                     List.map
                       (fun j ->
                          sprintf "M_%d_%d_%d_%d.f()" (dir_row-1) j !mod_rows k
                       )
                       (count !dir_cols)
                  )
-                 (count !mod_cols)
+                 (count !num_opens)
               )
         else
-          List.map 
+          List.map
             (fun k -> sprintf "M_%d_%d_%d_%d.f()" dir_row dir_col (row-1) k)
-            (count !mod_cols) in
+            (count !num_opens) in
 
       let deps =
         List.rev ("()" :: (List.rev deps)) in
@@ -46,7 +47,7 @@ let write_directory basedir dir_row dir_col =
       let mod_text = sprintf "(* %s *)
 let f() =
   %s
-" 
+"
           comment
           str_deps in
       let f = open_out
@@ -66,12 +67,12 @@ let bsconfig = {|
 }
 |}
 let write basedir =
-  let () = Unix.mkdir basedir 0o777 in 
-  let f = open_out (Filename.concat basedir "bsconfig.json") in 
-  output_string f bsconfig ; 
-  let () = close_out f in 
+  let () = Unix.mkdir basedir 0o777 in
+  let f = open_out (Filename.concat basedir "bsconfig.json") in
+  output_string f bsconfig ;
+  let () = close_out f in
   let basedir = (Filename.concat basedir "src") in
-  let () = Unix.mkdir basedir 0o777 in 
+  let () = Unix.mkdir basedir 0o777 in
   for row = 1 to !dir_rows do
     for col = 1 to !dir_cols do
       write_directory basedir row col
@@ -81,14 +82,23 @@ let write basedir =
 let () =
   let basedir = ref "." in
   Arg.parse
-    [ 
-      "-n", Arg.Int (fun n -> dir_rows := n;
+    [
+      "-dir-rows", Arg.Int (fun n -> dir_rows := n),
+      "<n>  set number of directory rows";
+      "-dir-cols", Arg.Int (fun n -> dir_cols := n),
+      "<n>  set number of directory columns";
+      "-mod-rows", Arg.Int (fun n -> mod_rows := n),
+      "<n>  set number of module rows";
+      "-mod-cols", Arg.Int (fun n -> mod_cols := n),
+      "<n>  set number of module columns";
+      "-num-opens", Arg.Int (fun n -> num_opens := n),
+      "<n>  set number of opens in the second directory";
+(*       "-n", Arg.Int (fun n -> dir_rows := 2;
                       dir_cols := n;
-                      mod_rows := n;
-                      mod_cols := n),
+                      mod_rows := 1;
+                      mod_cols := 5000),
       "<n>  set all of -dir-rows, -dir-cols, -mod-rows, -mod-cols to the same value";
-
-      "-comment-size", Arg.Set_int comment_size,
+ *)      "-comment-size", Arg.Set_int comment_size,
       "<n>  size of the module comment";
     ]
     (fun d ->
