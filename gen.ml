@@ -23,8 +23,8 @@ let write_directory basedir dir_row dir_col =
             []
           else
             List.flatten
-              (List.map 
-                 (fun k -> 
+              (List.map
+                 (fun k ->
                     List.map
                       (fun j ->
                          sprintf "M_%d_%d_%d_%d.f()" (dir_row-1) j !mod_rows k
@@ -34,7 +34,7 @@ let write_directory basedir dir_row dir_col =
                  (count !mod_cols)
               )
         else
-          List.map 
+          List.map
             (fun k -> sprintf "M_%d_%d_%d_%d.f()" dir_row dir_col (row-1) k)
             (count !mod_cols) in
 
@@ -44,11 +44,13 @@ let write_directory basedir dir_row dir_col =
       let str_deps = String.concat ";\n  " deps in
       let comment = String.make !comment_size 'X' in
       let mod_text = sprintf "(* %s *)
-let f() =
-  %s
-" 
-          comment
-          str_deps in
+let rec fib = function
+  | 0 -> 0
+  | 1 -> 1
+  | n -> fib (n-1) + fib (n-2)
+"
+          comment in
+          (* str_deps in *)
       let f = open_out
           (sprintf "%s/m_%d_%d_%d_%d.ml" dirname
              dir_row dir_col row col) in
@@ -66,12 +68,12 @@ let bsconfig = {|
 }
 |}
 let write basedir =
-  let () = Unix.mkdir basedir 0o777 in 
-  let f = open_out (Filename.concat basedir "bsconfig.json") in 
-  output_string f bsconfig ; 
-  let () = close_out f in 
+  let () = Unix.mkdir basedir 0o777 in
+  let f = open_out (Filename.concat basedir "bsconfig.json") in
+  output_string f bsconfig ;
+  let () = close_out f in
   let basedir = (Filename.concat basedir "src") in
-  let () = Unix.mkdir basedir 0o777 in 
+  let () = Unix.mkdir basedir 0o777 in
   for row = 1 to !dir_rows do
     for col = 1 to !dir_cols do
       write_directory basedir row col
@@ -81,11 +83,11 @@ let write basedir =
 let () =
   let basedir = ref "." in
   Arg.parse
-    [ 
+    [
       "-n", Arg.Int (fun n -> dir_rows := n;
                       dir_cols := n;
-                      mod_rows := n;
-                      mod_cols := n),
+                      mod_rows := 1;
+                      mod_cols := 10000),
       "<n>  set all of -dir-rows, -dir-cols, -mod-rows, -mod-cols to the same value";
 
       "-comment-size", Arg.Set_int comment_size,
