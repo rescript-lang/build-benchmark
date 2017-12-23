@@ -28,7 +28,7 @@ let write_directory basedir dir_row dir_col =
                  (fun k ->
                     List.map
                       (fun j ->
-                         sprintf "M_%d_%d_%d_%d.f()" (dir_row-1) j !mod_rows k
+                         sprintf "console.log(M_%d_%d_%d_%d.fib(10))" (dir_row-1) j !mod_rows k
                       )
                       (count !dir_cols)
                  )
@@ -36,40 +36,70 @@ let write_directory basedir dir_row dir_col =
               )
         else
           List.map
-            (fun k -> sprintf "M_%d_%d_%d_%d.f()" dir_row dir_col (row-1) k)
+            (fun k -> sprintf "console.log(M_%d_%d_%d_%d.fib(10))" dir_row dir_col (row-1) k)
             (count !num_opens) in
 
       let deps =
-        List.rev ("()" :: (List.rev deps)) in
+        List.rev ("return null;" :: (List.rev deps)) in
+
+      let imports =
+        if row = 1 then
+          if dir_row = 1 then
+            []
+          else
+            List.flatten
+              (List.map
+                 (fun k ->
+                    List.map
+                      (fun j ->
+                         sprintf "import * as M_%d_%d_%d_%d from '../dir_1_1/M_%d_%d_%d_%d'" (dir_row-1) j !mod_rows k (dir_row-1) j !mod_rows k
+                      )
+                      (count !dir_cols)
+                 )
+                 (count !num_opens)
+              )
+        else
+          List.map
+            (fun k -> sprintf "import * as M_%d_%d_%d_%d from '../dir_1_1/M_%d_%d_%d_%d'" dir_row dir_col (row-1) k dir_row dir_col (row-1) k)
+            (count !num_opens) in
 
       let str_deps = String.concat ";\n  " deps in
+      let str_imports = String.concat ";\n  " imports in
       let comment = String.make !comment_size 'X' in
-      let mod_text = sprintf "(* %s *)
-let f() =
+      let mod_text = sprintf "/* %s */
+export function fib(n: number) : number {
+  if (n === 0 || n === 1) {
+    return n
+  } else {
+    return fib (n-1) + fib (n -2)
+  }
+}
+%s
+export function f() {
   %s
+}
 "
           comment
+          str_imports
           str_deps in
       let f = open_out
-          (sprintf "%s/m_%d_%d_%d_%d.ml" dirname
+          (sprintf "%s/m_%d_%d_%d_%d.ts" dirname
              dir_row dir_col row col) in
       output_string f mod_text;
       close_out f
     done
   done
-let bsconfig = {|
+let tsconfig = {|
 {
-    "name": "test",
-    "sources" : {
-        "dir": "src",
-        "subdirs" : true
-    }
+    "include" : [
+      "src/**/*.ts"
+    ]
 }
 |}
 let write basedir =
   let () = Unix.mkdir basedir 0o777 in
-  let f = open_out (Filename.concat basedir "bsconfig.json") in
-  output_string f bsconfig ;
+  let f = open_out (Filename.concat basedir "tsconfig.json") in
+  output_string f tsconfig ;
   let () = close_out f in
   let basedir = (Filename.concat basedir "src") in
   let () = Unix.mkdir basedir 0o777 in
