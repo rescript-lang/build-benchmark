@@ -78,10 +78,12 @@ export function fib(n: number) : number {
 export function f() {
   %s
 }
+let test = '%s %d %d %d %d'
 "
           comment
           str_imports
-          str_deps in
+          str_deps
+          dirname dir_row dir_col row col in
       let f = open_out
           (sprintf "%s/m_%d_%d_%d_%d.ts" dirname
              dir_row dir_col row col) in
