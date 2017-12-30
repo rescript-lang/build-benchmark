@@ -64,16 +64,29 @@ let write_directory basedir dir_row dir_col =
             (count !num_opens) in
 
       let str_deps = String.concat ";\n  " deps in
-      let str_imports = String.concat ";\n  " imports in
+      let str_imports = String.concat ";\n  " (List.rev imports) in
       let comment = String.make !comment_size 'X' in
       let mod_text = sprintf "/* %s */
-export function fib(n: number) : number {
-  if (n === 0 || n === 1) {
-    return n
-  } else {
-    return fib (n-1) + fib (n -2)
-  }
-}
+export function fib(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib (n-1) + fib (n -2) } }
+export function fib1(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib (n-1) + fib (n -2) } }
+export function fib2(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib1 (n-1) + fib1 (n -2) } }
+export function fib3(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib2 (n-1) + fib2 (n -2) } }
+export function fib4(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib3 (n-1) + fib3 (n -2) } }
+export function fib5(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib4 (n-1) + fib4 (n -2) } }
+export function fib6(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib5 (n-1) + fib5 (n -2) } }
+export function fib7(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib6 (n-1) + fib6 (n -2) } }
+export function fib8(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib7 (n-1) + fib7 (n -2) } }
+export function fib9(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib8 (n-1) + fib8 (n -2) } }
+export function fib10(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib9 (n-1) + fib9 (n -2) } }
+export function fib11(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib10 (n-1) + fib10 (n -2) } }
+export function fib12(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib11 (n-1) + fib11 (n -2) } }
+export function fib13(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib12 (n-1) + fib12 (n -2) } }
+export function fib14(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib13 (n-1) + fib13 (n -2) } }
+export function fib15(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib14 (n-1) + fib14 (n -2) } }
+export function fib16(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib15 (n-1) + fib15 (n -2) } }
+export function fib17(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib16 (n-1) + fib16 (n -2) } }
+export function fib18(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib17 (n-1) + fib17 (n -2) } }
+export function fib19(n: number) : number {if (n === 0 || n === 1) {return n } else {return fib18 (n-1) + fib18 (n -2) } }
 %s
 export function f() {
   %s
