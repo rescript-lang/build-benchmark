@@ -18,7 +18,8 @@ is not super-small.
 To test it 
 
 ```sh
-ocaml unix.cma gen.ml -n 2 test && cd test && time bsb
+ocaml unix.cma gen.ml -n 2 test
+cd test && npm link bs-platform && time bsb
 ```
 
 Note to test raw performance, it is recommended to use `bsb.exe`

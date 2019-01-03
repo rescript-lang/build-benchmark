@@ -65,11 +65,16 @@ let bsconfig = {|
     }
 }
 |}
+let packagejson = {|{}|}
 let write basedir =
   let () = Unix.mkdir basedir 0o777 in 
   let f = open_out (Filename.concat basedir "bsconfig.json") in 
   output_string f bsconfig ; 
   let () = close_out f in 
+  let f = open_out (Filename.concat basedir "package.json") in 
+  output_string f packagejson ; 
+  let () = close_out f in 
+  
   let basedir = (Filename.concat basedir "src") in
   let () = Unix.mkdir basedir 0o777 in 
   for row = 1 to !dir_rows do
