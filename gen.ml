@@ -49,11 +49,14 @@ let f() =
 " 
           comment
           str_deps in
-      let f = open_out
-          (sprintf "%s/m_%d_%d_%d_%d.ml" dirname
-             dir_row dir_col row col) in
+      let modname = sprintf "%s/m_%d_%d_%d_%d" dirname
+             dir_row dir_col row col in 
+      let f = open_out (sprintf "%s.ml" modname) in
       output_string f mod_text;
-      close_out f
+      close_out f ; 
+      let f = open_out (sprintf "%s.mli" modname) in 
+      output_string f "val f : unit -> unit ";
+      close_out f 
     done
   done
 let bsconfig = {|
@@ -94,6 +97,8 @@ let () =
       "<n>  set all of -dir-rows, -dir-cols, -mod-rows, -mod-cols to the same value";
 
       "-comment-size", Arg.Set_int comment_size,
+      "-row", Arg.Int (fun n -> dir_rows := n);
+      "-col", Arg.Int (fun n -> dir_cols := n);
       "<n>  size of the module comment";
     ]
     (fun d ->
