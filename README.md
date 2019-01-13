@@ -1,3 +1,5 @@
+
+Credits: Modified from http://blog.camlcity.org/blog/omake1.html
 run `ocaml gen.ml` to generate a performance test for bsb
 
 The test involves the generation of DR * DC directories, the
