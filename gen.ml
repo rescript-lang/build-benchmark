@@ -95,11 +95,11 @@ let () =
                       mod_rows := n;
                       mod_cols := n),
       "<n>  set all of -dir-rows, -dir-cols, -mod-rows, -mod-cols to the same value";
+      "-row", Arg.Int (fun n -> dir_rows := n), "<n> set row";      
+      "-col", Arg.Int (fun n -> dir_cols := n), "<n> set col";
+      "-mrow", Arg.Int (fun n -> mod_rows := n), "<n> set mod-row";
+      "-mcol", Arg.Int (fun n -> mod_cols := n), "<n> set mod-col";
 
-      "-comment-size", Arg.Set_int comment_size,
-      "-row", Arg.Int (fun n -> dir_rows := n);
-      "-col", Arg.Int (fun n -> dir_cols := n);
-      "<n>  size of the module comment";
     ]
     (fun d ->
        basedir := d
